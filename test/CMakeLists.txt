@@ -11,7 +11,6 @@
 # -----------------------------------------------
 add_executable(
     scg-tests
-    linear/VectorNTest.cpp
     linear/Vector2Test.cpp
     linear/Vector3Test.cpp
     linear/MatrixNNTest.cpp

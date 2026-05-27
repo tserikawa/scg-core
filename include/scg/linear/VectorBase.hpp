@@ -10,14 +10,15 @@ namespace SCG
 {
     const float FloatZeroValue = 1e-6f;
 
-    template <int N>
-    class VectorN
+    // NOTE:CRTPパターン（Curiously Recurring Template Pattern）
+    template <typename T, int N>
+    class VectorBase
     {
     protected:
         float m_values[N];
 
     public:
-        VectorN()
+        VectorBase()
         {
             for (size_t i = 0; i < N; i++)
             {
@@ -25,7 +26,7 @@ namespace SCG
             }
         }
 
-        VectorN(std::initializer_list<float> init)
+        VectorBase(std::initializer_list<float> init)
         {
             if (init.size() != N)
             {
@@ -38,6 +39,7 @@ namespace SCG
             }
         }
 
+    public:
         float Length() const noexcept
         {
             float totalSquareLength = 0.0f;
@@ -48,7 +50,7 @@ namespace SCG
             return sqrt(totalSquareLength);
         }
 
-        VectorN<N> Normalize() const
+        T Normalize() const
         {
             float length = this->Length();
 
@@ -57,7 +59,7 @@ namespace SCG
                 throw std::domain_error("Zero Vector");
             }
 
-            VectorN<N> v;
+            T v;
             for (size_t i = 0; i < N; i++)
             {
                 v[i] = m_values[i] / length;
@@ -66,7 +68,7 @@ namespace SCG
             return v;
         }
 
-        float Dot(const VectorN<N> &other) const noexcept
+        float Dot(const VectorBase<T, N> &other) const noexcept
         {
             float dot = 0.0f;
             for (size_t i = 0; i < N; i++)
@@ -96,9 +98,9 @@ namespace SCG
             return m_values[index];
         }
 
-        VectorN<N> operator+(const VectorN<N> &other) const
+        T operator+(const VectorBase<T, N> &other) const
         {
-            VectorN<N> result;
+            T result;
             for (size_t i = 0; i < N; i++)
             {
                 result[i] = m_values[i] + other[i];
@@ -106,9 +108,9 @@ namespace SCG
             return result;
         }
 
-        VectorN<N> operator-(const VectorN<N> &other) const
+        T operator-(const VectorBase<T, N> &other) const
         {
-            VectorN<N> result;
+            T result;
             for (size_t i = 0; i < N; i++)
             {
                 result[i] = m_values[i] - other[i];
@@ -116,19 +118,19 @@ namespace SCG
             return result;
         }
 
-        VectorN<N> operator*(const VectorN<N> &other) const
+        T operator*(const VectorBase<T, N> &other) const
         {
-            VectorN<N> result;
+            T result;
             for (size_t i = 0; i < N; i++)
             {
-                result[i] = m_values[i] * other[i];
+                result.m_values[i] = m_values[i] * other[i];
             }
             return result;
         }
 
-        VectorN<N> operator*(const MatrixNN<N> &m) const
+        T operator*(const MatrixNN<N> &m) const
         {
-            VectorN<N> vm;
+            T vm;
             for (size_t i = 0; i < N; i++)
             {
                 for (size_t k = 0; k < N; k++)
@@ -139,14 +141,14 @@ namespace SCG
             return vm;
         }
 
-        VectorN<N> operator/(float value) const
+        T operator/(float value) const
         {
             if (abs(value) <= 1e-6f)
             {
-                throw std::domain_error("VectorN::operator/: ゼロ除算は数学的に定義されていません。ゼロ以外のスカラー値を指定してください。");
+                throw std::domain_error("VectorBase::operator/: ゼロ除算は数学的に定義されていません。ゼロ以外のスカラー値を指定してください。");
             }
 
-            VectorN<N> result;
+            T result;
             for (size_t i = 0; i < N; i++)
             {
                 result[i] = m_values[i] / value;
@@ -154,7 +156,7 @@ namespace SCG
             return result;
         }
 
-        VectorN<N> &operator+=(float value)
+        VectorBase<T, N> &operator+=(float value)
         {
             for (size_t i = 0; i < N; i++)
             {
@@ -163,7 +165,7 @@ namespace SCG
             return *this;
         }
 
-        VectorN<N> &operator-=(float value)
+        VectorBase<T, N> &operator-=(float value)
         {
             for (size_t i = 0; i < N; i++)
             {
@@ -172,7 +174,7 @@ namespace SCG
             return *this;
         }
 
-        VectorN<N> &operator*=(float value)
+        VectorBase<T, N> &operator*=(float value)
         {
             for (size_t i = 0; i < N; i++)
             {
@@ -181,11 +183,11 @@ namespace SCG
             return *this;
         }
 
-        VectorN<N> &operator/=(float value)
+        VectorBase<T, N> &operator/=(float value)
         {
             if (abs(value) <= 1e-6f)
             {
-                throw std::domain_error("VectorN::operator/: ゼロ除算は数学的に定義されていません。ゼロ以外のスカラー値を指定してください。");
+                throw std::domain_error("VectorBase::operator/: ゼロ除算は数学的に定義されていません。ゼロ以外のスカラー値を指定してください。");
             }
 
             for (size_t i = 0; i < N; i++)
@@ -195,7 +197,7 @@ namespace SCG
             return *this;
         }
 
-        bool operator==(const VectorN<N> &other) const noexcept
+        bool operator==(const VectorBase<T, N> &other) const noexcept
         {
             for (size_t i = 0; i < N; i++)
             {

@@ -1,22 +1,22 @@
 #pragma once
 
-#include "scg/linear/VectorN.hpp"
+#include "scg/linear/VectorBase.hpp"
 #include <cmath>
 #include <stdexcept>
 #include <initializer_list>
 
 namespace SCG
 {
-    class Vector2 : public VectorN<2>
+    class Vector2 : public VectorBase<Vector2, 2>
     {
     public:
-        Vector2() : VectorN<2>() {}
+        Vector2() : VectorBase<Vector2, 2>() {}
 
         Vector2(float x, float y)
-            : VectorN<2>({x, y}) {}
+            : VectorBase<Vector2, 2>({x, y}) {}
 
         Vector2(std::initializer_list<float> init)
-            : VectorN<2>(init) {}
+            : VectorBase<Vector2, 2>(init) {}
 
         float X() const noexcept
         {

@@ -15,6 +15,7 @@ add_executable(
     linear/Vector3Test.cpp
     linear/MatrixNNTest.cpp
     geometry/Point2Test.cpp
+    geometry/Segment2Test.cpp
 )
 
 # インクルードパスの設定

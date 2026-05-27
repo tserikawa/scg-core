@@ -139,6 +139,21 @@ namespace SCG
             return vm;
         }
 
+        VectorN<N> operator/(float value) const
+        {
+            if (abs(value) <= 1e-6f)
+            {
+                throw std::domain_error("VectorN::operator/: ゼロ除算は数学的に定義されていません。ゼロ以外のスカラー値を指定してください。");
+            }
+
+            VectorN<N> result;
+            for (size_t i = 0; i < N; i++)
+            {
+                result[i] = m_values[i] / value;
+            }
+            return result;
+        }
+
         VectorN<N> &operator+=(float value)
         {
             for (size_t i = 0; i < N; i++)
@@ -162,6 +177,20 @@ namespace SCG
             for (size_t i = 0; i < N; i++)
             {
                 m_values[i] *= value;
+            }
+            return *this;
+        }
+
+        VectorN<N> &operator/=(float value)
+        {
+            if (abs(value) <= 1e-6f)
+            {
+                throw std::domain_error("VectorN::operator/: ゼロ除算は数学的に定義されていません。ゼロ以外のスカラー値を指定してください。");
+            }
+
+            for (size_t i = 0; i < N; i++)
+            {
+                m_values[i] /= value;
             }
             return *this;
         }

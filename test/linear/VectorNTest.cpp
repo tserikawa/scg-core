@@ -77,6 +77,25 @@ TEST(VectorNTest, MultiplyMatrixOperator)
     EXPECT_NEAR(-1.0f, am[1], 1e-6f);
 }
 
+TEST(VectorNTest, DivideFloatOperator)
+{
+    SCG::VectorN<2> a({1.0f, 2.0f});
+    SCG::VectorN<2> b = a / 2.0f;
+    EXPECT_NEAR(0.5f, b[0], 1e-6f);
+    EXPECT_NEAR(1.0f, b[1], 1e-6f);
+}
+
+TEST(VectorNTest, DivideFloatOperatorZeroDivision)
+{
+    EXPECT_THROW(
+        []
+        {
+            SCG::VectorN<3> a({1.0f, 2.0f, 3.0f});
+            SCG::VectorN<3> b = a / 0.0f;
+        }(),
+        std::domain_error);
+}
+
 TEST(VectorNTest, AddAssignOperator)
 {
     SCG::VectorN<3> a({1.0f, 2.0f, 3.0f});
@@ -104,6 +123,24 @@ TEST(VectorNTest, MultiplyAssignOperator)
     EXPECT_EQ(1.5f, a[2]);
 }
 
+TEST(VectorNTest, DivideAssignFloatOperator)
+{
+    SCG::VectorN<2> a({1.0f, 2.0f});
+    a /= 2.0f;
+    EXPECT_NEAR(0.5f, a[0], 1e-6f);
+    EXPECT_NEAR(1.0f, a[1], 1e-6f);
+}
+
+TEST(VectorNTest, DivideAssignFloatOperatorZeroDivision)
+{
+    EXPECT_THROW(
+        []
+        {
+            SCG::VectorN<3> a({1.0f, 2.0f, 3.0f});
+            a /= 0.0f;
+        }(),
+        std::domain_error);
+}
 TEST(VectorNTest, EqualOperator)
 {
     SCG::VectorN<3> a({1.0f, 2.0f, 3.0f});
